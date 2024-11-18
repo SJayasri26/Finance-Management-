@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Reports</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS for card hover effects -->
+    <style>
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="mb-4">Financial Reports</h2>
+
+        <!-- Back Button -->
+        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary mb-4">Back to Transactions</a>
+
+        <!-- Month Selection Form -->
+        <form method="POST" action="{{ url_for('report') }}" class="mb-4">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="monthSelect" class="form-label">Select Month:</label>
+                    <select class="form-select" id="monthSelect" name="month">
+                        {% for month in range(1, 13) %}
+                            <option value="{{ month }}" {% if month == selected_month_name %}selected{% endif %}>
+                                {{ ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][month-1] }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary">View Report</button>
+                </div>
+            </div>
+        </form>
+
+        <!-- Display Reports: Using Bootstrap Grid for layout -->
+        <div class="row">
+            <!-- Monthly Report Section -->
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h3 class="card-title">Monthly Report  {{ selected_month_name }}</h3>
+                        <p><strong>Total Income:</strong> ${{ total_income_monthly }}</p>
+                        <p><strong>Total Expenses:</strong> ${{ total_expenses_monthly }}</p>
+                        <p><strong>Savings:</strong> ${{ savings_monthly }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Yearly Report Section -->
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h3 class="card-title">Yearly Report</h3>
+                        <p><strong>Total Income:</strong> ${{ total_income_yearly }}</p>
+                        <p><strong>Total Expenses:</strong> ${{ total_expenses_yearly }}</p>
+                        <p><strong>Savings:</strong> ${{ savings_yearly }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

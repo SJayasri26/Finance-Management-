@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Your Transactions</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for Profile Icon -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f4f6f9;
+            font-family: 'Arial', sans-serif;
+        }
+        .container {
+            margin-top: 30px;
+        }
+        h2 {
+            color: #333;
+            font-size: 32px;
+            font-weight: bold;
+        }
+        .transaction-table th, .transaction-table td {
+            padding: 15px;
+            text-align: center;
+        }
+        .transaction-table {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .btn-add, .btn-reports, .btn-budget, .btn-restore, .btn-logout {
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+        .table-responsive {
+            margin-top: 30px;
+        }
+        .income {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .expense {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .profile-section {
+            display: flex;
+            align-items: center;
+        }
+        .profile-section img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .profile-section .username {
+            font-size: 18px;
+            color: #333;
+            font-weight: 600;
+        }
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .profile-container {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .profile-container a {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Profile Section -->
+        <div class="profile-container">
+            <div class="profile-section">
+                <img src="{{ user_profile_picture_url }}" alt="Profile Icon">
+                <span class="username">{{ user_name }}</span>
+            </div>
+            <a href="{{ url_for('logout') }}" class="btn btn-secondary btn-logout">Logout</a>
+        </div>
+
+        <!-- Dashboard Header -->
+        <h2>Your Transactions</h2>
+        <p class="text-muted">Keep track of your income and expenses. Add, edit, or delete your transactions here.</p>
+
+        <!-- Action Buttons -->
+        <div class="btn-container">
+            <a href="{{ url_for('add_transaction') }}" class="btn btn-primary btn-add">Add Transaction</a>
+            <a href="{{ url_for('report') }}" class="btn btn-secondary btn-reports">View Financial Reports</a>
+            <a href="{{ url_for('set_budget') }}" class="btn btn-warning btn-budget">Set Budget</a>
+            <a href="{{ url_for('restore') }}" class="btn btn-info btn-restore">Restore Data</a>
+        </div>
+
+        <!-- Transaction Table -->
+        <div class="table-responsive">
+            <table class="table table-hover transaction-table">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if transactions %}
+                        {% for transaction in transactions %}
+                            <tr>
+                                <td>{{ transaction.category }}</td>
+                                <td class="{% if transaction.amount > 0 %}income{% else %}expense{% endif %}">
+                                    ${{ "%.2f" | format(transaction.amount) }}
+                                </td>
+                                <td>{{ transaction.date.strftime('%B %d, %Y') }}</td>
+                                <td>
+                                    <!-- Edit and Delete buttons -->
+                                    <a href="{{ url_for('edit_transaction', transaction_id=transaction.id) }}" class="btn btn-warning btn-sm">Edit</a>
+                                    <a href="{{ url_for('delete_transaction', transaction_id=transaction.id) }}" class="btn btn-danger btn-sm">Delete</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="4" class="text-center">No transactions found. Start by adding one!</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
